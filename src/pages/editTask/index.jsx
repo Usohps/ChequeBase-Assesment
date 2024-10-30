@@ -6,13 +6,15 @@ import { useDispatch } from "react-redux";
 import { addTodo } from "../../redux/reducers/todo.reducer";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EditTaskForm = () => {
   const router = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const { register, handleSubmit, getValues } = useForm();
-
+  const notify = () => toast("Wow so easy!");
   const createTaskMutation = useMutation({
     mutationFn: createTask,
     onSuccess: (data) => {
@@ -27,6 +29,7 @@ const EditTaskForm = () => {
       title: data.title,
       body: data.description,
     });
+    notify;
     router("/");
   };
 
@@ -121,6 +124,7 @@ const EditTaskForm = () => {
               {/* <div className="loader"></div> */}
             </button>
           </div>
+          <ToastContainer />
           {/* {createTaskMutation.error && (
             <p>Error: {createTaskMutation.error.message}</p>
           )} */}

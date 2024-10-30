@@ -28,7 +28,7 @@ const Home = () => {
   return (
     <div className="bg-white min-h-screen  flex flex-col items-center">
       {/* Greeting Section */}
-      <div className="bg-blue-500 text-white w-full md:rounded-none  rounded-lg p-4 shadow-lg">
+      <div className="bg-blue-500 text-white w-full md:rounded-none  rounded-b-xl p-4 shadow-lg">
         <h1 className="text-lg font-bold">
           Good Morning, Chequebase!
           <span role="img" aria-label="wave">
@@ -38,7 +38,7 @@ const Home = () => {
         <p className="text-sm text-yellow-200 mt-2">
           You have 2 uncompleted tasks
         </p>
-        <button className="mt-3 bg-yellow-400 text-blue-900 font-semibold py-2 px-4 rounded-full shadow hover:bg-yellow-300">
+        <button className="mt-3 w-full md:max-w-[300px] bg-yellow-400 text-blue-900 font-semibold py-2 px-4 rounded-full shadow hover:bg-yellow-300">
           View calendar
         </button>
       </div>
@@ -63,7 +63,7 @@ const Home = () => {
           </div>
         ) : (
           <>
-            <h3 className="bg-blue-800 text-white p-2 rounded-md mb-2">
+            <h3 className="bg-blue-800 text-white m-2 md:m-0 p-2 rounded-md mb-2">
               Today 5th August
             </h3>
             <ul className="space-y-2">
@@ -103,7 +103,7 @@ const Home = () => {
           </>
         )}
 
-        <div className="pb-16">
+        <div className="pb-16 p-2">
           <a href="/addTask">
             <button className="md:hidden flex  items-center justify-center gap-3 py-2  m-auto w-full border border-yellow-400 text-blue-900 font-semibold  my-4 rounded-full shadow-sm hover:bg-yellow-300">
               <IoMdAdd size={36} />
