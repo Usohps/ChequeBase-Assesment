@@ -1,31 +1,33 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTask } from "../../api/api";
-import { useState } from "react";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { MdCheck } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { addTodo } from "../../redux/reducers/todo.reducer";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const NewTaskForm = () => {
   const router = useNavigate();
   const dispatch = useDispatch();
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
   const queryClient = useQueryClient();
+  const { register, handleSubmit, getValues } = useForm();
 
   const createTaskMutation = useMutation({
     mutationFn: createTask,
     onSuccess: (data) => {
-      dispatch(addTodo({ ...data, completed: false, userId: 1 }));
+      const values = getValues();
+      dispatch(addTodo({ ...data, ...values, completed: false, userId: 1 }));
       queryClient.invalidateQueries(["tasks"]);
     },
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    createTaskMutation.mutate({ title, body });
-    // router("/");
+  const onSubmit = (data) => {
+    createTaskMutation.mutate({
+      title: data.title,
+      body: data.description,
+    });
+    router("/");
   };
 
   return (
@@ -42,15 +44,13 @@ const NewTaskForm = () => {
         </div>
 
         {/* Form  */}
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Task title
             </label>
             <input
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              {...register("title", { required: true, maxLength: 80 })}
               type="text"
               placeholder="Task title"
               className="outline-none mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -62,7 +62,7 @@ const NewTaskForm = () => {
               Task description
             </label>
             <input
-              required
+              {...register("description", { required: true, maxLength: 80 })}
               type="text"
               placeholder="Task description"
               className="outline-none mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -75,8 +75,8 @@ const NewTaskForm = () => {
                 Date
               </label>
               <input
-                required
-                type="text"
+                {...register("date", { required: true })}
+                type="date"
                 placeholder="dd/mm/yyyy"
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
               />
@@ -86,8 +86,8 @@ const NewTaskForm = () => {
                 Time
               </label>
               <input
-                required
-                type="text"
+                {...register("time", { required: true })}
+                type="time"
                 placeholder="00:00"
                 className="outline-none mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               />
@@ -99,9 +99,7 @@ const NewTaskForm = () => {
               Notes
             </label>
             <textarea
-              required
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
+              {...register("notes", { required: true })}
               placeholder="Notes"
               rows="4"
               className="outline-none mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"

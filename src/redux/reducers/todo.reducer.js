@@ -1,18 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const todos = [
-  { userId: 1, id: 1, title: "delectus aut autem", completed: true },
-
   {
+    title: "Wash",
+    description: "Wash Clothes",
+    date: "2024-10-11",
+    time: "11:57",
+    notes: "wwasassdas",
+    id: 1,
     userId: 1,
-    id: 2,
-    title: "quis ut nam facilis et officia qui",
     completed: false,
   },
 
-  { userId: 1, id: 3, title: "fugiat veniam minus", completed: false },
-
-  { userId: 1, id: 4, title: "et porro tempora", completed: true },
+  {
+    title: "Cook",
+    description: "Cook Afang Soup",
+    date: "2024-10-11",
+    time: "13:57",
+    notes: "wwasassdas",
+    id: 2,
+    userId: 1,
+    completed: true,
+  },
 ];
 
 const initialState = { todos };
@@ -27,8 +36,18 @@ export const todoSlice = createSlice({
     },
 
     addTodo: (state, action) => {
-      console.log(action.payload);
-      state.todos = state.todos.push({ ...action.payload });
+      state.todos.push({ ...action.payload });
+    },
+
+    markAsCompleted: (state, action) => {
+      state.todos = state.todos.map((todo) => {
+        if (todo.id === action.payload.todoId) {
+          const completedTodo = { ...todo, completed: !todo.completed };
+          todo = completedTodo;
+          return todo;
+        }
+        return todo;
+      });
     },
 
     deleteTodo: (state, action) => {
@@ -40,6 +59,7 @@ export const todoSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { deleteTodo, setTodos, addTodo } = todoSlice.actions;
+export const { deleteTodo, setTodos, addTodo, markAsCompleted } =
+  todoSlice.actions;
 
 export default todoSlice.reducer;
