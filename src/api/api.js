@@ -1,51 +1,61 @@
-//GET all Task 
+import axios from "axios";
+const baseURL = "https://jsonplaceholder.typicode.com/todos";
+
+const instance = axios.create({ baseURL });
+
+//GET all Task
 export const getAllTasks = async () => {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-    if (!response.ok) {
-      throw new Error("Failed to fetch tasks");
-    }
-    return response.json();
-  };
-  
-  export const fetchTask = async (taskId) => {
-    const response = await fetch(`/api/tasks/${taskId}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch task");
-    }
-    return response.json();
-  };
-  //Create new task below
-  export const createTask = async (newTask) => {
-    const response = await fetch("/api/tasks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newTask),
+  try {
+    const { data } = await instance({ method: "get" });
+    return data;
+  } catch (error) {
+    throw new Error(`Error getting Todos  ${error}`);
+  }
+};
+
+export const fetchTask = async (todoId) => {
+  try {
+    const { data } = await instance({ method: "get", url: `/${todoId}` });
+    return data;
+  } catch (error) {
+    throw new Error(`Error getting Todo ${todoId}: ${error}`);
+  }
+};
+
+//Create new task below
+export const createTask = async (newTask) => {
+  try {
+    const { data } = await instance({ method: "post", data: newTask });
+    return data;
+  } catch (error) {
+    throw new Error(`Error creating Todo: ${error}`);
+  }
+};
+
+//Edit task below
+export const updateTask = async (todoId, updatedTask) => {
+  try {
+    const { data } = await instance({
+      method: "patch",
+      url: `/${todoId}`,
+      data: updatedTask,
     });
-    if (!response.ok) {
-      throw new Error("Failed to create task");
-    }
-    return response.json();
-  };
-  //Edit task below
-  export const updateTask = async (taskId, updatedTask) => {
-    const response = await fetch(`/api/tasks/${taskId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedTask),
-    });
-    if (!response.ok) {
-      throw new Error("Failed to update task");
-    }
-    return response.json();
-  };
-  //Delete Task below
-  export const deleteTask = async (taskId) => {
-    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${taskId}`, {
+    return data;
+  } catch (error) {
+    throw new Error(`Error updating Todo ${todoId}: ${error}`);
+  }
+};
+
+//Delete Task below
+export const deleteTask = async (todoId) => {
+  try {
+    const { data } = await instance({
       method: "DELETE",
+      url: `/${todoId}`,
     });
-    if (!response.ok) {
-      throw new Error("Failed to delete task");
-    }
-    return response.json();
-  };
-  
+
+    return data;
+  } catch (error) {
+    throw new Error(`Error deleting Todo ${todoId}: ${error}`);
+  }
+};

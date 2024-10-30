@@ -1,18 +1,17 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteTask, getAllTasks } from "../api/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteTask } from "../api/api";
 import { useState } from "react";
+import { IoMdAdd } from "react-icons/io";
 import { AiTwotoneDelete } from "react-icons/ai";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteTodo } from "../redux/reducers/todo.reducer";
+
 const Home = () => {
-    const [isChecked, setIsChecked] = useState(false);
-    const queryClient = useQueryClient();
-  const {
-    data: todos,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["todos"],
-    queryFn: getAllTasks,
-  });
+  const dispatch = useDispatch();
+  const { todos } = useSelector(({ todos }) => todos);
+  const [isChecked, setIsChecked] = useState(false);
+  const queryClient = useQueryClient();
+
   const deleteTaskMutation = useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
@@ -22,10 +21,18 @@ const Home = () => {
 
   const handleDelete = (taskId) => {
     deleteTaskMutation.mutate(taskId);
+    dispatch(deleteTodo({ todoId: taskId }));
   };
+
   const mockTimes = ["10:00am", "12:00pm", "03:00pm", "08:00pm"];
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="w-[300px] h-screen  flex items-center justify-center flex-col m-auto">
+  //       <div className="homeLoader animate-bounce"></div>
+  //     </div>
+  //   );
+  // }
 
   // const tasks = [
   //   {
@@ -71,7 +78,7 @@ const Home = () => {
   //     date: "Tomorrow",
   //   },
   // ];
-  
+
   return (
     <div className="bg-white min-h-screen p-4 flex flex-col items-center">
       {/* Greeting Section */}
@@ -104,10 +111,10 @@ const Home = () => {
           Today 5th August
         </h3>
         <ul className="space-y-2">
-          {todos.slice(0, 4).map((todo, index) => (
+          {todos?.slice(0, 10).map((todo, index) => (
             <li
               key={todo.id}
-              className="flex justify-between items-center p-4 bg-gray-100 rounded-md shadow-sm"
+              className="flex justify-between items-center p-4 md:bg-gray-100 rounded-md md:shadow-sm"
             >
               <label className="flex items-center space-x-2">
                 <input
@@ -118,9 +125,13 @@ const Home = () => {
                 />
                 <span>{todo.title}</span>
               </label>
-              <div>
-                <button onClick={() => handleDelete(todo.id)} disabled={deleteTaskMutation.isLoading}>
-                  <AiTwotoneDelete size={24} />
+
+              <div className="flex flex-col items-center justify-center gap-3">
+                <button
+                  onClick={() => handleDelete(todo.id)}
+                  disabled={deleteTaskMutation.isLoading}
+                >
+                  <AiTwotoneDelete size={24} className="text-red-600" />
                 </button>
                 <span className="text-sm text-gray-500">
                   {mockTimes[index % mockTimes.length]}
@@ -130,9 +141,15 @@ const Home = () => {
           ))}
         </ul>
 
-        <button className="md:w-[350px] m-auto w-full bg-yellow-400 text-blue-900 font-semibold py-2 my-4 rounded-full shadow hover:bg-yellow-300">
-          <a href="/addTask"> + Add Task</a>
-        </button>
+        <div className="pb-16">
+          <button className="md:hidden m-auto w-full border border-yellow-400 text-blue-900 font-semibold py-2 my-4 rounded-full shadow hover:bg-yellow-300">
+            <a href="/addTask">
+              {" "}
+              <IoMdAdd />
+              Add Task
+            </a>
+          </button>
+        </div>
       </div>
       {/* <div className="bg-white w-full max-w-md rounded-lg mt-6 p-4 shadow-lg">
         {["Today", "Tomorrow"].map((day, index) => (
