@@ -5,7 +5,7 @@ import { AiTwotoneDelete } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTodo, markAsCompleted } from "../redux/reducers/todo.reducer";
-
+import { MdModeEdit } from "react-icons/md";
 const Home = () => {
   const dispatch = useDispatch();
   const { todos } = useSelector(({ todos }) => todos);
@@ -80,15 +80,19 @@ const Home = () => {
                 />
                 <span>{todo.title}</span>
               </label>
-
-              <div className="flex flex-col items-center justify-center gap-3">
-                <button
-                  onClick={() => handleDelete(todo.id)}
-                  disabled={deleteTaskMutation.isLoading}
-                >
-                  <AiTwotoneDelete size={24} className="text-red-600" />
-                </button>
-                <span className="text-sm text-gray-500">{todo.time}</span>
+              <div className="flex items-center gap-6 justify-center">
+                <a href="/editTask">
+                  <MdModeEdit size={24} />
+                </a>
+                <div className="flex flex-col items-center justify-center gap-3">
+                  <button
+                    onClick={() => handleDelete(todo.id)}
+                    disabled={deleteTaskMutation.isLoading}
+                  >
+                    <AiTwotoneDelete size={24} className="text-red-600" />
+                  </button>
+                  <span className="text-sm text-gray-500">{todo.time}</span>
+                </div>
               </div>
             </li>
           ))}
@@ -97,7 +101,6 @@ const Home = () => {
         <div className="pb-16">
           <button className="md:hidden m-auto w-full border border-yellow-400 text-blue-900 font-semibold py-2 my-4 rounded-full shadow hover:bg-yellow-300">
             <a href="/addTask">
-              {" "}
               <IoMdAdd />
               Add Task
             </a>
