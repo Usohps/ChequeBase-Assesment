@@ -6,7 +6,7 @@ const todos = [
     description: "Wash Clothes",
     date: "2024-10-11",
     time: "11:57",
-    notes: "wwasassdas",
+    notes: "",
     id: 1,
     userId: 1,
     completed: false,
@@ -14,13 +14,24 @@ const todos = [
 
   {
     title: "Cook",
-    description: "Cook Afang Soup",
+    description: "Cook a meal",
     date: "2024-10-11",
     time: "13:57",
-    notes: "wwasassdas",
+    notes: "",
     id: 2,
     userId: 1,
     completed: true,
+  },
+
+  {
+    title: "Play Tennis",
+    description: "Play Table Tennis",
+    date: "2024-11-12",
+    time: "10:22",
+    notes: "",
+    id: 3,
+    userId: 1,
+    completed: false,
   },
 ];
 
@@ -37,6 +48,17 @@ export const todoSlice = createSlice({
 
     addTodo: (state, action) => {
       state.todos.push({ ...action.payload });
+    },
+
+    updateTodo: (state, action) => {
+      state.todos = state.todos.map((todo) => {
+        if (todo.id == action.payload.id) {
+          const completedTodo = { ...todo, ...action.payload };
+          todo = completedTodo;
+          return todo;
+        }
+        return todo;
+      });
     },
 
     markAsCompleted: (state, action) => {
@@ -59,7 +81,7 @@ export const todoSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { deleteTodo, setTodos, addTodo, markAsCompleted } =
+export const { deleteTodo, setTodos, addTodo, markAsCompleted, updateTodo } =
   todoSlice.actions;
 
 export default todoSlice.reducer;

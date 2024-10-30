@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { addTodo } from "../../redux/reducers/todo.reducer";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const NewTaskForm = () => {
   const router = useNavigate();
@@ -27,6 +28,7 @@ const NewTaskForm = () => {
       title: data.title,
       body: data.description,
     });
+    toast.success("Todo created successfully");
     router("/");
   };
 

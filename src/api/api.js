@@ -34,16 +34,16 @@ export const createTask = async (newTask) => {
 };
 
 //Edit task below
-export const updateTask = async (todoId, updatedTask) => {
+export const updateTask = async (updatedTask) => {
   try {
     const { data } = await instance({
       method: "patch",
-      url: `/${todoId}`,
+      url: `/${updatedTask.id}`,
       data: updatedTask,
     });
     return data;
   } catch (error) {
-    throw new Error(`Error updating Todo ${todoId}: ${error}`);
+    throw new Error(`Error updating Todo ${updatedTask.id}: ${error}`);
   }
 };
 
