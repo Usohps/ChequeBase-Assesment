@@ -26,9 +26,9 @@ const Home = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen p-4 flex flex-col items-center">
+    <div className="bg-white min-h-screen  flex flex-col items-center">
       {/* Greeting Section */}
-      <div className="bg-blue-500 text-white w-full  rounded-lg p-4 shadow-lg">
+      <div className="bg-blue-500 text-white w-full md:rounded-none  rounded-lg p-4 shadow-lg">
         <h1 className="text-lg font-bold">
           Good Morning, Chequebase!
           <span role="img" aria-label="wave">
@@ -44,7 +44,7 @@ const Home = () => {
       </div>
 
       {/* Task List Section */}
-      <div className="container">
+      <div className="container md:max-w-xl">
         <label className="inline-flex items-center">
           <input
             type="checkbox"
