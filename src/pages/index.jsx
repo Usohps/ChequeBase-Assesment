@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTodo, markAsCompleted } from "../redux/reducers/todo.reducer";
 import { MdModeEdit } from "react-icons/md";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const Home = () => {
   const handleDelete = (taskId) => {
     deleteTaskMutation.mutate(taskId);
     dispatch(deleteTodo({ todoId: taskId }));
+    toast.success("Todo deleted successfully");
   };
 
   return (
@@ -84,7 +86,7 @@ const Home = () => {
                     <span>{todo.title}</span>
                   </label>
                   <div className="flex items-center gap-6 justify-center">
-                    <a href="/editTask">
+                    <a href={`/edit?id=${todo.id}`}>
                       <MdModeEdit size={24} />
                     </a>
                     <div className="flex flex-col items-center justify-center gap-3">

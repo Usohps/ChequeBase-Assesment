@@ -1,35 +1,48 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createTask } from "../../api/api";
+import { updateTask } from "../../api/api";
 import { MdKeyboardBackspace } from "react-icons/md";
 import { MdCheck } from "react-icons/md";
-import { useDispatch } from "react-redux";
-import { addTodo } from "../../redux/reducers/todo.reducer";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { updateTodo } from "../../redux/reducers/todo.reducer";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import React from "react";
 
 const EditTaskForm = () => {
+  function useQuery() {
+    const { search } = useLocation();
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+  }
+
   const router = useNavigate();
+  const query = useQuery();
+  const todoId = query.get("id");
+  const { todos } = useSelector(({ todos }) => todos);
+  const currentTodo = todos.find((todo) => todo.id == todoId);
+
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const { register, handleSubmit, getValues } = useForm();
-  const notify = () => toast("Wow so easy!");
-  const createTaskMutation = useMutation({
-    mutationFn: createTask,
+
+  const updateTodoMutation = useMutation({
+    mutationFn: updateTask,
+
     onSuccess: (data) => {
       const values = getValues();
-      dispatch(addTodo({ ...data, ...values, completed: false, userId: 1 }));
+      dispatch(updateTodo({ ...data, ...values, id: todoId }));
       queryClient.invalidateQueries(["tasks"]);
     },
   });
 
   const onSubmit = (data) => {
-    createTaskMutation.mutate({
+    updateTodoMutation.mutate({
       title: data.title,
       body: data.description,
+      id: todoId,
     });
-    notify;
+    toast.success("Todo Updated successfully");
     router("/");
   };
 
@@ -53,7 +66,11 @@ const EditTaskForm = () => {
               Task title
             </label>
             <input
-              {...register("title", { required: true, maxLength: 80 })}
+              {...register("title", {
+                required: true,
+                maxLength: 80,
+                value: currentTodo?.title,
+              })}
               type="text"
               placeholder="Task title"
               className="outline-none mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -65,7 +82,11 @@ const EditTaskForm = () => {
               Task description
             </label>
             <input
-              {...register("description", { required: true, maxLength: 80 })}
+              {...register("description", {
+                required: true,
+                maxLength: 80,
+                value: currentTodo?.description,
+              })}
               type="text"
               placeholder="Task description"
               className="outline-none mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -78,7 +99,10 @@ const EditTaskForm = () => {
                 Date
               </label>
               <input
-                {...register("date", { required: true })}
+                {...register("date", {
+                  required: true,
+                  value: currentTodo?.date,
+                })}
                 type="date"
                 placeholder="dd/mm/yyyy"
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
@@ -89,7 +113,10 @@ const EditTaskForm = () => {
                 Time
               </label>
               <input
-                {...register("time", { required: true })}
+                {...register("time", {
+                  required: true,
+                  value: currentTodo?.time,
+                })}
                 type="time"
                 placeholder="00:00"
                 className="outline-none mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -102,7 +129,10 @@ const EditTaskForm = () => {
               Notes
             </label>
             <textarea
-              {...register("notes", { required: true })}
+              {...register("notes", {
+                required: true,
+                value: currentTodo?.notes,
+              })}
               placeholder="Notes"
               rows="4"
               className="outline-none mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -113,10 +143,10 @@ const EditTaskForm = () => {
           <div className="flex justify-end mt-4">
             <button
               type="submit"
-              disabled={createTaskMutation.isLoading}
+              disabled={updateTodoMutation.isLoading}
               className="w-12 h-12 flex items-center justify-center bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 focus:outline-none"
             >
-              {createTaskMutation.isLoading ? (
+              {updateTodoMutation.isLoading ? (
                 <div className="loader"></div>
               ) : (
                 <MdCheck size={24} />
@@ -124,7 +154,7 @@ const EditTaskForm = () => {
               {/* <div className="loader"></div> */}
             </button>
           </div>
-          <ToastContainer />
+
           {/* {createTaskMutation.error && (
             <p>Error: {createTaskMutation.error.message}</p>
           )} */}
