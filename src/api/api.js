@@ -16,7 +16,8 @@ export const getAllTasks = async () => {
 export const fetchTask = async (todoId) => {
   try {
     const { data } = await instance({ method: "get", url: `/${todoId}` });
-    return data;
+    const slicedData = data.slice(0, 10);
+    return slicedData;
   } catch (error) {
     throw new Error(`Error getting Todo ${todoId}: ${error}`);
   }

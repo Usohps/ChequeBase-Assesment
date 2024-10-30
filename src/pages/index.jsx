@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTask } from "../api/api";
 import { useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteTodo } from "../redux/reducers/todo.reducer";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteTodo, markAsCompleted } from "../redux/reducers/todo.reducer";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ const Home = () => {
   const deleteTaskMutation = useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
-      queryClient.invalidateQueries(["todo"]); // Refetch tasks after deletion
+      queryClient.invalidateQueries(["todo"]);
     },
   });
 
@@ -24,8 +24,6 @@ const Home = () => {
     dispatch(deleteTodo({ todoId: taskId }));
   };
 
-  const mockTimes = ["10:00am", "12:00pm", "03:00pm", "08:00pm"];
-
   // if (isLoading) {
   //   return (
   //     <div className="w-[300px] h-screen  flex items-center justify-center flex-col m-auto">
@@ -33,51 +31,6 @@ const Home = () => {
   //     </div>
   //   );
   // }
-
-  // const tasks = [
-  //   {
-  //     id: 1,
-  //     text: "Walk the dog",
-  //     time: "10:00am",
-  //     completed: false,
-  //     date: "Today",
-  //   },
-  //   {
-  //     id: 2,
-  //     text: "Buy groceries",
-  //     time: "12:00pm",
-  //     completed: true,
-  //     date: "Today",
-  //   },
-  //   {
-  //     id: 3,
-  //     text: "Submit health forms",
-  //     time: "03:00pm",
-  //     completed: false,
-  //     date: "Today",
-  //   },
-  //   {
-  //     id: 4,
-  //     text: "Study for exams",
-  //     time: "08:00pm",
-  //     completed: false,
-  //     date: "Today",
-  //   },
-  //   {
-  //     id: 5,
-  //     text: "Take dog to the vet",
-  //     time: "08:00am",
-  //     completed: false,
-  //     date: "Tomorrow",
-  //   },
-  //   {
-  //     id: 6,
-  //     text: "Study for exams",
-  //     time: "08:00pm",
-  //     completed: false,
-  //     date: "Tomorrow",
-  //   },
-  // ];
 
   return (
     <div className="bg-white min-h-screen p-4 flex flex-col items-center">
@@ -111,7 +64,7 @@ const Home = () => {
           Today 5th August
         </h3>
         <ul className="space-y-2">
-          {todos?.slice(0, 10).map((todo, index) => (
+          {todos?.map((todo) => (
             <li
               key={todo.id}
               className="flex justify-between items-center p-4 md:bg-gray-100 rounded-md md:shadow-sm"
@@ -120,7 +73,9 @@ const Home = () => {
                 <input
                   type="checkbox"
                   checked={todo.completed}
-                  readOnly
+                  onChange={() =>
+                    dispatch(markAsCompleted({ todoId: todo.id }))
+                  }
                   className=" text-blue-600"
                 />
                 <span>{todo.title}</span>
@@ -133,9 +88,7 @@ const Home = () => {
                 >
                   <AiTwotoneDelete size={24} className="text-red-600" />
                 </button>
-                <span className="text-sm text-gray-500">
-                  {mockTimes[index % mockTimes.length]}
-                </span>
+                <span className="text-sm text-gray-500">{todo.time}</span>
               </div>
             </li>
           ))}
@@ -219,3 +172,48 @@ const Home = () => {
 };
 
 export default Home;
+
+// const tasks = [
+//   {
+//     id: 1,
+//     text: "Walk the dog",
+//     time: "10:00am",
+//     completed: false,
+//     date: "Today",
+//   },
+//   {
+//     id: 2,
+//     text: "Buy groceries",
+//     time: "12:00pm",
+//     completed: true,
+//     date: "Today",
+//   },
+//   {
+//     id: 3,
+//     text: "Submit health forms",
+//     time: "03:00pm",
+//     completed: false,
+//     date: "Today",
+//   },
+//   {
+//     id: 4,
+//     text: "Study for exams",
+//     time: "08:00pm",
+//     completed: false,
+//     date: "Today",
+//   },
+//   {
+//     id: 5,
+//     text: "Take dog to the vet",
+//     time: "08:00am",
+//     completed: false,
+//     date: "Tomorrow",
+//   },
+//   {
+//     id: 6,
+//     text: "Study for exams",
+//     time: "08:00pm",
+//     completed: false,
+//     date: "Tomorrow",
+//   },
+// ];
