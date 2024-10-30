@@ -118,12 +118,11 @@ const NewTaskForm = () => {
               ) : (
                 <MdCheck size={24} />
               )}
-              {/* <div className="loader"></div> */}
             </button>
           </div>
-          {createTaskMutation.error && (
+          {/* {createTaskMutation.error && (
             <p>Error: {createTaskMutation.error.message}</p>
-          )}
+          )} */}
         </form>
       </div>
     </div>
